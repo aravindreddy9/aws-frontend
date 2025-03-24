@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 import { AuthenticationDetails, CognitoUser } from "amazon-cognito-identity-js";
 import UserPool from "../UserPool";
+import "./Auth.css";
 
 const Auth = () => {
     const navigate = useNavigate();
@@ -95,27 +96,40 @@ const Auth = () => {
 
     return (
         <div className="auth-container">
-            <h2>{isSignup ? "Sign Up" : "Log In"}</h2>
-            {!isVerifying ? (
-                <form onSubmit={handleSubmit}>
-                <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-                <input type="password" name="password" placeholder="Password" onChange={handleChange} required />
-                {isSignup && (
-                    <input type="text" name="given_name" placeholder="Name" onChange={handleChange} required />
-                )}
-                <button type="submit">{isSignup ? "Sign Up" : "Log In"}</button>
-            </form>
-            ) : (
-                <form onSubmit={handleVerification}>
-                    <input type="text" value={verificationCode} name="verificationCode" placeholder="Enter verification code" onChange={(e) => setVerificationCode(e.target.value)} required />
-                    <button type="submit">Verify</button>
-                </form>
+        <h2 className="auth-header">{isSignup ? "Sign Up" : "Log In"}</h2>
+
+        {!isVerifying ? (
+            <form className="auth-form" onSubmit={handleSubmit}>
+            <input className="auth-input" type="email" name="email" placeholder="Email" onChange={handleChange} required />
+            <input className="auth-input" type="password" name="password" placeholder="Password" onChange={handleChange} required />
+            {isSignup && (
+                <input className="auth-input" type="text" name="given_name" placeholder="Name" onChange={handleChange} required />
             )}
-            <p onClick={toggleForm}>
-                {isSignup ? "Already have an account? Log In" : "Don't have an account? Sign Up"}
-            </p>
-            {message && <p>{message}</p>} {/* Display success message */}
-            {error && <p>{error}</p>} {/* Display error message */}
+            <button className="auth-button" type="submit">
+                {isSignup ? "Sign Up" : "Log In"}
+            </button>
+            </form>
+        ) : (
+            <form className="auth-form" onSubmit={handleVerification}>
+            <input
+                className="auth-input"
+                type="text"
+                value={verificationCode}
+                name="verificationCode"
+                placeholder="Enter verification code"
+                onChange={(e) => setVerificationCode(e.target.value)}
+                required
+            />
+            <button className="auth-button" type="submit">Verify</button>
+            </form>
+        )}
+
+        <p className="toggle-link" onClick={toggleForm}>
+            {isSignup ? "Already have an account? Log In" : "Don't have an account? Sign Up"}
+        </p>
+
+        {message && <p className="auth-message success">{message}</p>}
+        {error && <p className="auth-message error">{error}</p>}
         </div>
     );
 };
