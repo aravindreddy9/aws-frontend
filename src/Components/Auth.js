@@ -26,6 +26,7 @@ const Auth = () => {
         setFormData({ email: "", password: "" , given_name: "" });  // Reset form data
         setEmail("");  
         setPassword("");
+        setMessage("");
     };
 
     const handleSubmit = async (e) => {
@@ -43,7 +44,6 @@ const Auth = () => {
                     if (err) {
                         setMessage(err.message || "Error signing up");
                     } else {
-                        setMessage("Signup successful! Please wait for admin approval.");
                         setSignupEmail(formData.email);
                         setIsVerifying(true);
                     }
@@ -65,7 +65,8 @@ const Auth = () => {
                         // Redirect based on role
                         if (role === "Admins") navigate("/admin");
                         else if (role === "Devs") navigate("/developer");
-                        else navigate("/user");
+                        else if (role === "Users") navigate("/user");
+                        else navigate("/unauthorized")
                     },
                     onFailure: (err) => {
                         setError(err.message || "Login failed");
@@ -87,7 +88,7 @@ const Auth = () => {
                 setError(err.message || "Verification failed");
             } else {
                 console.log("Verification successful!", result);
-                setMessage("Verification successful! You can now log in.");
+                setMessage("Signup successful! Please wait for admin approval.");
                 setIsVerifying(false); // Hide verification input
             }
         });
