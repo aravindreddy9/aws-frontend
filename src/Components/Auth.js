@@ -64,8 +64,8 @@ const Auth = () => {
         
                         // Redirect based on role
                         if (role === "Admins") navigate("/admin");
-                        else if (role === "Devs") navigate("/developer");
-                        else if (role === "Users") navigate("/user");
+                        else if (role === "Devs") navigate("/developer",{state:session});
+                        else if (role === "Users") navigate("/user",{ state: session });
                         else navigate("/unauthorized")
                     },
                     onFailure: (err) => {
