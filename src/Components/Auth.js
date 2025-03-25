@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CognitoUserAttribute } from "amazon-cognito-identity-js";
 import { AuthenticationDetails, CognitoUser } from "amazon-cognito-identity-js";
+import { jwtDecode } from 'jwt-decode';
 import UserPool from "../UserPool";
 import "./Auth.css";
 
@@ -59,9 +60,14 @@ const Auth = () => {
         
                         // Fetch user role from Cognito token
                         const idToken = session.getIdToken();
-                        const groups = idToken.payload["cognito:groups"] || [];
+                        const token = idToken.getJwtToken(); // 👈 Raw JWT
+                        sessionStorage.setItem("idToken", token); // ✅ Store securely
+                        
+                        const decoded = jwtDecode(token);
+                        const groups = decoded["cognito:groups"] || [];
                         const role = groups.length > 0 ? groups[0] : "User";
-        
+
+
                         // Redirect based on role
                         if (role === "Admins") navigate("/admin");
                         else if (role === "Devs") navigate("/developer",{state:session});

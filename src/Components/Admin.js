@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { signOut } from "../Utils/AuthUtils";
+import { useNavigate } from "react-router-dom";
 import "./Admin.css";
 
 const AdminPage = () => {
     const [usersWithRoles, setUsersWithRoles] = useState([]);
     const [usersWithoutRoles, setUsersWithoutRoles] = useState([]);
     const [selectedRoles, setSelectedRoles] = useState({});  // Stores selected roles for unassigned users
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         fetch("https://4pylyp4kl3.execute-api.us-east-2.amazonaws.com/prod/fetch-users")
@@ -42,56 +46,87 @@ const AdminPage = () => {
         .catch((error) => console.error("Error assigning role:", error));
     };
 
-    return (
-        <div>
-            <h2>Users with Assigned Roles</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {usersWithRoles.map((user) => (
-                        <tr key={user.userId}>
-                            <td>{user.email}</td>
-                            <td>{user.role}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+    const handleSignOut = () => {
+        signOut();
+        navigate("/");
+      };
 
-            <h2>Users without Roles</h2>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Assign Role</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {usersWithoutRoles.map((user) => (
-                        <tr key={user.userId}>
-                            <td>{user.email}</td>
-                            <td>
-                                <select onChange={(e) => handleRoleChange(user.userId, e.target.value)}>
-                                    <option value="">Select Role</option>
-                                    <option value="Admins">Admin</option>
-                                    <option value="Devs">Dev</option>
-                                    <option value="Users">User</option>
-                                </select>
-                            </td>
-                            <td>
-                                <button onClick={() => assignRole(user.userId)}>Assign</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+      return (
+        <div style={{ padding: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h2>Admin Panel</h2>
+            <button onClick={handleSignOut}>Sign Out</button>
+          </div>
+      
+          <h3>Users with Assigned Roles</h3>
+          <table border="1" cellPadding="8" cellSpacing="0">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              {usersWithRoles.length > 0 ? (
+                usersWithRoles.map((user) => (
+                  <tr key={user.userId}>
+                    <td>{user.email}</td>
+                    <td>{user.role}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="2">No users found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+      
+          <h3 style={{ marginTop: "30px" }}>Users without Roles</h3>
+          <table border="1" cellPadding="8" cellSpacing="0">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Assign Role</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {usersWithoutRoles.length > 0 ? (
+                usersWithoutRoles.map((user) => (
+                  <tr key={user.userId}>
+                    <td>{user.email}</td>
+                    <td>
+                      <select
+                        value={user.selectedRole || ""}
+                        onChange={(e) => handleRoleChange(user.userId, e.target.value)}
+                      >
+                        <option value="">Select Role</option>
+                        <option value="Admins">Admin</option>
+                        <option value="Devs">Dev</option>
+                        <option value="Users">User</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => assignRole(user.userId)}
+                        disabled={!user.selectedRole}
+                      >
+                        Assign
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3">All users have roles</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-    );
+      );
+      
 };
 
 export default AdminPage;

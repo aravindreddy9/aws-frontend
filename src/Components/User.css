@@ -1,0 +1,43 @@
+/* User.css */
+
+.user-container {
+    padding: 40px;
+    font-family: Arial, sans-serif;
+    background-color: #f7f9fc;
+    min-height: 100vh;
+  }
+  
+  .user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .user-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .signout-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #e63946;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .signout-button:hover {
+    background-color: #d62828;
+  }
+  
+  .user-welcome {
+    font-size: 22px;
+    color: #444;
+    margin-top: 20px;
+  }
+  
