@@ -6,7 +6,8 @@ import "./Admin.css";
 const AdminPage = () => {
     const [usersWithRoles, setUsersWithRoles] = useState([]);
     const [usersWithoutRoles, setUsersWithoutRoles] = useState([]);
-    const [selectedRoles, setSelectedRoles] = useState({});  // Stores selected roles for unassigned users
+    const [selectedRoles, setSelectedRoles] = useState({});
+    const [refreshToggle, setRefreshToggle] = useState(false);
     const navigate = useNavigate();
 
 
@@ -18,7 +19,7 @@ const AdminPage = () => {
                 setUsersWithoutRoles(data.usersWithoutRoles);
             })
             .catch((error) => console.error("Error fetching users:", error));
-    }, []);
+    }, [refreshToggle]);
 
     const handleRoleChange = (userId, role) => {
         setSelectedRoles((prev) => ({
@@ -41,7 +42,7 @@ const AdminPage = () => {
         .then((res) => res.json())
         .then(() => {
             alert("Role assigned successfully!");
-            window.location.reload(); // Refresh list
+            setRefreshToggle((prev) => !prev);
         })
         .catch((error) => console.error("Error assigning role:", error));
     };
