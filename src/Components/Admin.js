@@ -9,10 +9,17 @@ const AdminPage = () => {
     const [selectedRoles, setSelectedRoles] = useState({});
     const [refreshToggle, setRefreshToggle] = useState(false);
     const navigate = useNavigate();
-
+    const token = sessionStorage.getItem("idToken");
 
     useEffect(() => {
-        fetch("https://4pylyp4kl3.execute-api.us-east-2.amazonaws.com/prod/fetch-users")
+        fetch("https://4pylyp4kl3.execute-api.us-east-2.amazonaws.com/prod/fetch-users",
+          {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,  // Replace with actual token
+                "Content-Type": "application/json"
+            }
+        })
             .then((res) => res.json())
             .then((data) => {
                 setUsersWithRoles(data.usersWithRoles);
@@ -36,6 +43,7 @@ const AdminPage = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify({ userId, groupName }),
         })
