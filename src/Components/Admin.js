@@ -98,7 +98,7 @@ const AdminPage = () => {
                     <td>{user.email}</td>
                     <td>
                       <select
-                        value={user.selectedRole || ""}
+                        value={selectedRoles[user.userId] || ""}
                         onChange={(e) => handleRoleChange(user.userId, e.target.value)}
                       >
                         <option value="">Select Role</option>
@@ -110,7 +110,7 @@ const AdminPage = () => {
                     <td>
                       <button
                         onClick={() => assignRole(user.userId)}
-                        disabled={!user.selectedRole}
+                        disabled={!selectedRoles[user.userId]}
                       >
                         Assign
                       </button>

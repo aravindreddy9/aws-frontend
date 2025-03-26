@@ -95,7 +95,13 @@ const Auth = () => {
             } else {
                 console.log("Verification successful!", result);
                 setMessage("Signup successful! Please wait for admin approval.");
-                setIsVerifying(false); // Hide verification input
+                setTimeout(() => {
+                    setMessage("");
+                }, 3000);
+                setIsVerifying(false);
+                setIsSignup(false);
+                setVerificationCode("");
+                setFormData((prev) => ({ ...prev, email: signupEmail }));
             }
         });
     };
@@ -107,7 +113,7 @@ const Auth = () => {
 
         {!isVerifying ? (
             <form className="auth-form" onSubmit={handleSubmit}>
-            <input className="auth-input" type="email" name="email" placeholder="Email" onChange={handleChange} required />
+            <input className="auth-input" type="email" name="email" value={formData.email} placeholder="Email" onChange={handleChange} required />
             <input className="auth-input" type="password" name="password" placeholder="Password" onChange={handleChange} required />
             {isSignup && (
                 <input className="auth-input" type="text" name="given_name" placeholder="Name" onChange={handleChange} required />
