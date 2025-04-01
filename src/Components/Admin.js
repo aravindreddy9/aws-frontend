@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { signOut } from "../Utils/AuthUtils";
 import { useNavigate } from "react-router-dom";
 import "./Admin.css";
-
+import { api } from "../Utils/ApiUtils";
 const AdminPage = () => {
     const [usersWithRoles, setUsersWithRoles] = useState([]);
     const [usersWithoutRoles, setUsersWithoutRoles] = useState([]);
@@ -12,21 +12,13 @@ const AdminPage = () => {
     const token = sessionStorage.getItem("idToken");
 
     useEffect(() => {
-        fetch("https://4pylyp4kl3.execute-api.us-east-2.amazonaws.com/prod/fetch-users",
-          {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,  // Replace with actual token
-                "Content-Type": "application/json"
-            }
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                setUsersWithRoles(data.usersWithRoles);
-                setUsersWithoutRoles(data.usersWithoutRoles);
-            })
-            .catch((error) => console.error("Error fetching users:", error));
-    }, [refreshToggle]);
+        api.get("/fetch-users")
+          .then((data) => {
+            setUsersWithRoles(data.usersWithRoles);
+            setUsersWithoutRoles(data.usersWithoutRoles);
+          })
+          .catch((error) => console.error("Error fetching users:", error));
+      }, [refreshToggle]);
 
     const handleRoleChange = (userId, role) => {
         setSelectedRoles((prev) => ({
@@ -35,25 +27,18 @@ const AdminPage = () => {
         }));
     };
 
+
     const assignRole = (userId) => {
         const role = selectedRoles[userId];
         if (!role) return alert("Please select a role");
-        const groupName = role
-        fetch("https://4pylyp4kl3.execute-api.us-east-2.amazonaws.com/prod/assign-role", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify({ userId, groupName }),
-        })
-        .then((res) => res.json())
-        .then(() => {
+      
+        api.post("/assign-role", { userId, groupName: role })
+          .then(() => {
             alert("Role assigned successfully!");
             setRefreshToggle((prev) => !prev);
-        })
-        .catch((error) => console.error("Error assigning role:", error));
-    };
+          })
+          .catch((error) => console.error("Error assigning role:", error));
+      };
 
     const handleSignOut = () => {
         signOut();
